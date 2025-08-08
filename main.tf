@@ -9,7 +9,7 @@ terraform {
 
 provider "local" {}
 
-resource "local_file" "example" {
-  content  = "This is a sample file created using Terraform."
-  filename = "${path.module}/sample.txt"
-}
+# resource "local_file" "example" {
+#   content  = "This is a sample file created using Terraform."
+#   filename = "${path.module}/sample.txt"
+# }
