@@ -3,7 +3,7 @@ on:
   - pull_request
 
 env:
-  working_dir: 'project'
+  working_dir: 'workdir'
 
 jobs:
   checks:
