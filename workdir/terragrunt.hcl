@@ -1,5 +1,5 @@
 terraform {
-  source = "./modules/example"
+  source = "../modules/example"
 }
 
 # include {
