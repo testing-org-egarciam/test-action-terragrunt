@@ -1,0 +1,58 @@
+name: Terraform Plan
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'infra/**'
+
+jobs:
+  get-changed-dirs:
+    runs-on: apps-ubuntu
+    outputs:
+      changed_dirs: ${{ steps.changed-files.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          dir_names: true
+          files: |
+            **.tf
+            **.hcl
+
+      - name: Echo changed directories
+        shell: bash
+        run: |
+          echo "Directorios con ficheros .tf o .hcl modificados:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+
+  install-terragrunt:
+    runs-on: apps-ubuntu
+    needs: get-changed-dirs
+    env:
+      CHANGED_DIRS: ${{ needs.get-changed-dirs.outputs.changed_dirs }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install solo Terragrunt
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          tg_version: latest
+
+      - name: Echo directorios recibidos
+        shell: bash
+        run: |
+          echo "Directorios recibidos del job anterior: $CHANGED_DIRS"
+
+      - name: Terragrunt Init y Plan
+        shell: bash
+        run: |
+          for dir in $CHANGED_DIRS; do
+            echo "Ejecutando terragrunt init --all en $dir"
+            terragrunt init --all --working-dir="$dir"
+            echo "Ejecutando terragrunt plan --all en $dir"
+            terragrunt plan --all --working-dir="$dir"
+          done
