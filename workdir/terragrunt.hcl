@@ -8,5 +8,5 @@ terraform {
 
 inputs = {
   filename = "sample.txt"
-  content  = "Este archivo fue generado por Terragrunt en GitHub Actions."
+  content  = "Este archivo fue generado por Terragrunt en GitHub Actions y es UNA PRUEBA."
 }
